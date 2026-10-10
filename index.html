@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>NOIR &amp; OR — CAISSE PRO</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{--gold:#d4af37;--gold2:#f5d76e;--gold3:#8a6d1f;--bg:#070707;--card:#121212;--card2:#1a1a1a;--line:#2a2a2a;--green:#22c55e;--red:#ef4444;--turq:#0e4b4e;--turq2:#0a383b;--brown:#3a2a18;--brown2:#2b1f11;--txt:#f0ead8;--muted:#9c9484}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',Roboto,Arial,sans-serif;min-height:100vh}
+#app{max-width:520px;margin:0 auto;padding:14px 14px 40px}
+h1,h2,h3{font-family:Georgia,'Times New Roman',serif}
+.hidden{display:none!important}
+.hdr{display:flex;align-items:center;gap:12px;padding:10px 4px 16px}
+.logo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#1a1a1a,#000);border:1px solid var(--gold3);display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px rgba(212,175,55,.25)}
+.brand h1{font-size:20px;letter-spacing:2px;background:linear-gradient(90deg,var(--gold2),var(--gold),var(--gold3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand small{color:var(--muted);letter-spacing:3px;font-size:10px}
+.hdr-right{margin-left:auto;text-align:right;font-size:11px;color:var(--muted)}
+.lock-pill{display:inline-flex;align-items:center;gap:5px;margin-top:4px;padding:3px 10px;border-radius:20px;font-weight:700;font-size:10px;letter-spacing:1px}
+.lock-open{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.4)}
+.lock-closed{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.4)}
+.lock-wait{background:rgba(212,175,55,.12);color:var(--gold);border:1px solid rgba(212,175,55,.4)}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+.tile{position:relative;border-radius:20px;padding:26px 18px;background:linear-gradient(160deg,var(--card2),#0d0d0d);border:1px solid var(--line);cursor:pointer;transition:.25s;overflow:hidden}
+.tile:before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 10%,rgba(212,175,55,.14),transparent 60%)}
+.tile:active{transform:scale(.96)}
+.tile .ic{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);margin-bottom:14px}
+.tile h3{font-size:16px;letter-spacing:1px;color:var(--gold2)}
+.tile p{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}
+.tile.wide{grid-column:span 2}
+.view-ttl{display:flex;align-items:center;gap:10px;margin:6px 0 16px}
+.back-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--gold);font-size:18px;cursor:pointer}
+.view-ttl h2{font-size:18px;letter-spacing:2px;color:var(--gold2)}
+.card{border-radius:18px;padding:18px;margin-bottom:16px}
+.card-turq{background:linear-gradient(160deg,var(--turq),var(--turq2));border:1px solid #1e6b6e}
+.card-brown{background:linear-gradient(160deg,var(--brown),var(--brown2));border:1px solid #5a422a}
+.card-dark{background:linear-gradient(160deg,var(--card2),#0c0c0c);border:1px solid var(--line)}
+.sec-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.12)}
+.sec-head h3{font-size:15px;letter-spacing:1px;flex:1}
+.badge-mini{font-size:9px;padding:3px 8px;border-radius:12px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.2);letter-spacing:1px}
+.field{margin-bottom:13px}
+.field label{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--txt);margin-bottom:6px;letter-spacing:.5px;font-weight:600}
+.field input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.35);color:#fff;font-size:16px;font-weight:700;outline:none}
+.field input:focus{border-color:var(--gold)}
+.total-bar{margin-top:6px;padding:14px;border-radius:14px;background:rgba(0,0,0,.45);border:1px dashed rgba(255,255,255,.25);display:flex;justify-content:space-between;align-items:center}
+.total-bar span{font-size:12px;letter-spacing:1px}
+.total-bar b{font-size:19px;font-family:Georgia,serif}
+.btn{width:100%;padding:15px;border-radius:14px;border:none;font-size:14px;font-weight:800;letter-spacing:1.5px;cursor:pointer;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:9px;margin-top:14px}
+.btn:active{transform:scale(.97)}
+.btn-gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1a1405}
+.btn-green{background:linear-gradient(135deg,#2ee06f,#16a34a);color:#04180b}
+.btn-red{background:linear-gradient(135deg,#f87171,#dc2626);color:#1c0505}
+.btn-outline{background:transparent;color:var(--gold);border:1px solid var(--gold3)}
+.btn:disabled{opacity:.4}
+.pay-logos{display:flex;gap:6px}
+.pay-badge{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;color:#fff}
+.badge-mvola{background:#00a651}.badge-om{background:#ff7900}.badge-am{background:#e40000}
+.alert{padding:12px 14px;border-radius:12px;font-size:12px;font-weight:700;margin-top:12px;display:flex;gap:9px;align-items:center}
+.alert-red{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.45);color:#fca5a5}
+.alert-green{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.4);color:#86efac}
+.benef-card{display:flex;align-items:center;gap:14px;padding:16px;border-radius:16px;background:linear-gradient(160deg,#161616,#0b0b0b);border:1px solid var(--gold3);margin-bottom:16px}
+.benef-card .bic{width:48px;height:48px;border-radius:14px;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.35);display:flex;align-items:center;justify-content:center}
+.benef-card .bval{font-size:24px;font-weight:900;font-family:Georgia,serif}
+.pos{color:var(--green)!important}.neg{color:var(--red)!important}
+.hist-item{border-radius:16px;padding:14px;margin-bottom:12px;background:linear-gradient(160deg,var(--card2),#0c0c0c);border:1px solid var(--line)}
+.hist-top{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.hist-top b{font-size:14px;flex:1}
+.tag{font-size:9px;padding:3px 9px;border-radius:11px;font-weight:800}
+.tag-ok{background:rgba(34,197,94,.15);color:var(--green)}
+.tag-no{background:rgba(212,175,55,.12);color:var(--gold)}
+.tag-closed{background:rgba(239,68,68,.15);color:var(--red)}
+.hist-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;font-size:11.5px;color:var(--muted)}
+.hist-grid b{color:var(--txt);float:right}
+.chips{display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap}
+.chip{padding:7px 14px;border-radius:20px;font-size:11px;font-weight:800;border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.chip.active{border-color:var(--gold);color:var(--gold2);background:rgba(212,175,55,.1)}
+.dash-card{border-radius:16px;padding:15px;background:linear-gradient(160deg,var(--card2),#0c0c0c);border:1px solid var(--line);margin-bottom:11px}
+.dash-card h4{font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.krow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed rgba(255,255,255,.07);font-size:12.5px}
+.krow:last-child{border-bottom:none}
+.krow b{font-size:14px;font-family:Georgia,serif}
+.chart-box{border-radius:16px;padding:14px;background:linear-gradient(160deg,var(--card2),#0c0c0c);border:1px solid var(--line);margin-bottom:16px}
+.chart-box h4{font-size:12px;color:var(--gold2);margin-bottom:10px}
+canvas{width:100%!important}
+.sub-ttl{font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin:16px 0 9px;border-left:3px solid var(--gold);padding-left:9px}
+input[type=date]{color-scheme:dark}
+.work-calendar{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:14px;background:#0b0b0b}
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-head strong{color:var(--gold2);font-size:13px;text-transform:capitalize}
+.cal-nav{border:1px solid var(--gold3);background:#17140a;color:var(--gold2);border-radius:9px;padding:7px 12px;font-weight:800}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}
+.cal-weekday{font-size:9px;color:var(--muted);padding:4px 0}
+.cal-day{position:relative;min-height:34px;border:1px solid #303030;background:#151515;color:var(--txt);border-radius:9px;font-size:11px;font-weight:700}
+.cal-day.selected{outline:2px solid var(--gold2)}
+.cal-day .dot{position:absolute;width:5px;height:5px;border-radius:50%;bottom:3px;left:calc(50% - 2px)}
+.cal-day.st-closed{border-color:#ef4444}.cal-day.st-closed .dot{background:#ef4444}
+.cal-day.st-open{border-color:#22c55e}.cal-day.st-open .dot{background:#22c55e}
+.cal-day.st-progress{border-color:#38bdf8}.cal-day.st-progress .dot{background:#38bdf8}
+.cal-day.st-off{border-color:#777}.cal-day.st-off .dot{background:#9ca3af}
+.cal-legend{display:flex;flex-wrap:wrap;gap:8px 12px;margin-top:12px;font-size:10px;color:var(--muted)}
+.cal-legend span{display:flex;align-items:center;gap:5px}.cal-legend i{width:7px;height:7px;border-radius:50%;display:inline-block}
+.benef-mini{margin-top:12px;padding:12px;border-radius:12px;border:1px solid rgba(212,175,55,.5);background:rgba(0,0,0,.3);display:flex;justify-content:space-between;align-items:center}
+.benef-mini span{font-size:11px;color:#f0c891;font-weight:800}.benef-mini b{font-size:18px;font-family:Georgia,serif}
+::-webkit-scrollbar{width:0}
+.login-wrap{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:30px 20px}
+.login-logo{text-align:center;margin-bottom:34px}
+.login-logo .lg{width:80px;height:80px;margin:0 auto 18px;border-radius:22px;background:linear-gradient(135deg,#1a1a1a,#000);border:1px solid var(--gold3);display:flex;align-items:center;justify-content:center;box-shadow:0 0 32px rgba(212,175,55,.35)}
+.login-logo h1{font-size:26px;letter-spacing:5px;background:linear-gradient(90deg,var(--gold2),var(--gold),var(--gold3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.login-logo small{color:var(--muted);letter-spacing:5px;font-size:10px;display:block;margin-top:8px}
+.user-badge{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:14px;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.3);margin-bottom:14px;font-size:11px}
+.user-badge .role{font-size:9px;font-weight:900;padding:2px 8px;border-radius:8px}
+.role-admin{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1a1405}
+.role-vendeur{background:rgba(34,197,94,.15);color:var(--green)}
+.logout-btn{margin-left:auto;background:transparent;border:1px solid rgba(239,68,68,.5);color:#fca5a5;border-radius:8px;font-size:10px;padding:3px 9px;font-weight:800}
+.cloud-pill{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#121212;border:1px solid var(--gold);color:var(--gold2);padding:10px 20px;border-radius:20px;font-size:11px;font-weight:700;z-index:999;transition:opacity .4s;pointer-events:none}
+.cloud-pill.hide{opacity:0}
+.admin-bar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,rgba(212,175,55,.15),rgba(212,175,55,.05));border:1px solid var(--gold3);margin-bottom:14px;font-size:11px}
+.admin-bar select{flex:1;background:#0a0a0a;color:var(--gold2);border:1px solid var(--gold3);border-radius:9px;padding:8px 10px;font-size:12px;font-weight:700}
+</style>
+</head>
+<body>
+<div id="app">
+
+<div id="view-login">
+  <div class="login-wrap">
+    <div class="login-logo">
+      <div class="lg"><svg width="44" height="44" viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="18" height="13" rx="2" stroke="#d4af37" stroke-width="1.6"/><path d="M3 11h18" stroke="#d4af37" stroke-width="1.6"/><circle cx="16.5" cy="15" r="1.4" fill="#d4af37"/><path d="M6 7V5.5A1.5 1.5 0 017.5 4h9A1.5 1.5 0 0118 5.5V7" stroke="#d4af37" stroke-width="1.6"/></svg></div>
+      <h1>NOIR &amp; OR</h1>
+      <small>CAISSE PRO</small>
+    </div>
+    <div class="card card-dark">
+      <div class="sec-head"><h3>CONNEXION</h3></div>
+      <div class="field"><label>Adresse e-mail</label><input type="email" id="loginEmail" placeholder="exemple@gmail.com"></div>
+      <div class="field"><label>Mot de passe</label><input type="password" id="loginPass" placeholder="••••••••"></div>
+      <button class="btn btn-gold" id="btnLogin" onclick="doLogin()">SE CONNECTER</button>
+      <div id="loginMsg"></div>
+    </div>
+  </div>
+</div>
+<div id="view-app" class="hidden">
+  <div class="hdr">
+    <div class="logo"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="18" height="13" rx="2" stroke="#d4af37" stroke-width="1.6"/><path d="M3 11h18" stroke="#d4af37" stroke-width="1.6"/><circle cx="16.5" cy="15" r="1.4" fill="#d4af37"/></svg></div>
+    <div class="brand"><h1>NOIR &amp; OR</h1><small>CAISSE PRO</small></div>
+    <div class="hdr-right"><div id="hdrDate">—</div><div id="hdrLock" class="lock-pill lock-wait">EN ATTENTE</div></div>
+  </div>
+
+  <div id="view-menu">
+    <div class="user-badge">
+      <span id="userEmail">—</span>
+      <span id="userRole" class="role"></span>
+      <button class="logout-btn" onclick="doLogout()">DÉCONNEXION</button>
+    </div>
+    <div class="menu-grid">
+      <div class="tile wide" onclick="go('caisse')"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M3 9h18v10a1 1 0 01-1 1H4a1 1 0 01-1-1V9z" stroke="#d4af37" stroke-width="1.6"/><path d="M3 9l2-4h14l2 4" stroke="#d4af37" stroke-width="1.6"/><path d="M13 12h5v3h-5z" fill="#d4af37"/></svg></div><h3>CAISSE</h3><p>Ouverture, fermeture, calcul automatique &amp; report</p></div>
+      <div class="tile" onclick="go('historique')"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#d4af37" stroke-width="1.6"/><path d="M12 7v5l3.5 2" stroke="#d4af37" stroke-width="1.6" stroke-linecap="round"/></svg></div><h3>HISTORIQUE</h3><p>Suivi jour / semaine / mois</p></div>
+      <div class="tile" onclick="go('rapport')"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke="#d4af37" stroke-width="1.6" stroke-linecap="round"/></svg></div><h3>RAPPORT</h3><p>Graphiques aires, courbes &amp; circulaire</p></div>
+      <div class="tile" onclick="go('dash')"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="2" stroke="#d4af37" stroke-width="1.6"/><rect x="13" y="3" width="8" height="5" rx="2" stroke="#d4af37" stroke-width="1.6"/><rect x="13" y="10" width="8" height="11" rx="2" stroke="#d4af37" stroke-width="1.6"/><rect x="3" y="13" width="8" height="8" rx="2" stroke="#d4af37" stroke-width="1.6"/></svg></div><h3>TABLEAU DE BORD</h3><p>Bilan professionnel complet</p></div>
+      <div class="tile" onclick="go('params')"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#d4af37" stroke-width="1.6"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06A1.7 1.7 0 0015 19.4a1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09A1.7 1.7 0 009 19.4a1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.51 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06A1.7 1.7 0 0019.4 9c.23.6.83 1 1.51 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.51 1z" stroke="#d4af37" stroke-width="1.3"/></svg></div><h3>PARAMÈTRES</h3><p>Date, devise &amp; données</p></div>
+    </div>
+  </div>
+
+  <div id="view-caisse" class="hidden">
+    <div class="view-ttl"><button class="back-btn" onclick="go('menu')">←</button><h2>CAISSE</h2><span class="badge-mini" id="caisseDate"></span></div>
+    <div id="adminBarCaisse"></div>
+    <div class="benef-card"><div class="bic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M20 7H4a2 2 0 00-2 2v8a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z" stroke="#d4af37" stroke-width="1.6"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" stroke="#d4af37" stroke-width="1.6"/><circle cx="16.5" cy="13" r="1.3" fill="#d4af37"/></svg></div><div style="flex:1"><div style="font-size:11px;letter-spacing:2px;color:var(--muted)">BÉNÉFICES</div><div class="bval" id="benefVal">—</div><div id="benefAlert"></div></div></div>
+
+    <div class="card card-turq" id="openCard">
+      <div class="sec-head"><h3 style="color:#a7f3ea">DÉPART DE CAISSE</h3><span id="openLockIco"></span></div>
+      <div class="field"><label>Solde (mobile money) <span class="pay-logos"><span class="pay-badge badge-mvola">MVola</span><span class="pay-badge badge-om">OM</span><span class="pay-badge badge-am">Airtel</span></span></label><input type="number" min="0" id="d_solde" class="calc-dep" placeholder="0"></div>
+      <div class="field"><label>Espèces</label><input type="number" min="0" id="d_especes" class="calc-dep" placeholder="0"></div>
+      <div class="field"><label>Sortie / Trosa</label><input type="number" min="0" id="d_sortie" class="calc-dep" placeholder="0"></div>
+      <div class="field"><label>Entrée / Vola niditra</label><input type="number" min="0" id="d_entree" class="calc-dep" placeholder="0"></div>
+      <div class="total-bar"><span>TOTAL DÉPART</span><b id="totalDepart" style="color:#5eead4">0 Ar</b></div>
+      <button class="btn btn-green" id="btnOpen" onclick="ouvrirCaisse()">OUVRIR LA CAISSE</button>
+    </div>
+
+    <div class="card card-brown hidden" id="closeCard">
+      <div class="sec-head"><h3 style="color:#f0c891">FERMETURE DE CAISSE</h3><span id="closeLockIco"></span></div>
+      <div class="field"><label>Solde (mobile money)</label><input type="number" min="0" id="f_solde" class="calc-fer" placeholder="0"></div>
+      <div class="field"><label>Espèces</label><input type="number" min="0" id="f_especes" class="calc-fer" placeholder="0"></div>
+      <div class="field"><label>Dépenses</label><input type="number" min="0" id="f_depenses" class="calc-fer" placeholder="0"></div>
+      <div class="field"><label>Sortie / Trosa</label><input type="number" min="0" id="f_sortie" class="calc-fer" placeholder="0"></div>
+      <div class="field"><label>Entrée / Vola niditra</label><input type="number" min="0" id="f_entree" class="calc-fer" placeholder="0"></div>
+      <div class="total-bar"><span>TOTAL FERMETURE</span><b id="totalFermeture" style="color:#f0c891">0 Ar</b></div>
+      <div class="benef-mini"><span>◆ BÉNÉFICE ESTIMÉ</span><b id="benefCloseMini">0 Ar</b></div>
+      <button class="btn btn-red" id="btnClose" onclick="fermerCaisse()">FERMETURE DE CAISSE</button>
+    </div>
+
+    <div class="card card-dark hidden" id="reportCard">
+      <div class="sec-head"><h3 style="color:var(--gold2)">REPORT DE CAISSE</h3></div>
+      <p style="font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:12px">Les soldes de fermeture deviendront la caisse de départ de la date choisie.</p>
+      <div class="field"><label>Reporter vers la date</label><input type="date" id="reportDate"></div>
+      <button class="btn btn-gold" onclick="reporterCaisse()">REPORTER LA CAISSE →</button>
+    </div>
+  </div>
+
+  <div id="view-historique" class="hidden">
+    <div class="view-ttl"><button class="back-btn" onclick="go('menu')">←</button><h2>HISTORIQUE</h2></div>
+    <div id="adminBarHist"></div>
+    <div class="chips" id="histChips">
+      <div class="chip active" data-p="jour" onclick="histPeriod('jour')">PAR JOUR</div>
+      <div class="chip" data-p="semaine" onclick="histPeriod('semaine')">PAR SEMAINE</div>
+      <div class="chip" data-p="mois" onclick="histPeriod('mois')">PAR MOIS</div>
+    </div>
+    <div id="histList"></div>
+  </div>
+  
+<div id="view-rapport" class="hidden">
+  <div class="view-ttl"><button class="back-btn" onclick="go('menu')">←</button><h2>RAPPORT</h2></div>
+  <div id="adminBarRap"></div>
+  <div class="chart-box"><h4>◆ Évolution des bénéfices</h4><canvas id="chBenef" height="220"></canvas></div>
+  <div class="chart-box"><h4>◆ Évolution des dépenses</h4><canvas id="chDep" height="220"></canvas></div>
+  <div class="chart-box"><h4>◆ Fond &amp; capital</h4><canvas id="chFond" height="220"></canvas></div>
+  <div class="chart-box"><h4>◆ Dépenses vs Bénéfices</h4><canvas id="chPie" height="240"></canvas></div>
+</div>
+
+<div id="view-dash" class="hidden">
+  <div class="view-ttl"><button class="back-btn" onclick="go('menu')">←</button><h2>TABLEAU DE BORD</h2><span class="badge-mini" id="dashDate"></span></div>
+  <div id="adminBarDash"></div>
+  <div id="dashAlert"></div>
+  <div class="sub-ttl">Bénéfices</div>
+  <div class="dash-card"><h4>Jour / Semaine / Mois</h4>
+    <div class="krow"><span>Bénéfice du jour</span><b id="db_j">—</b></div>
+    <div class="krow"><span>Bénéfices de la semaine</span><b id="db_s">—</b></div>
+    <div class="krow"><span>Bénéfices du mois</span><b id="db_m">—</b></div>
+  </div>
+  <div class="sub-ttl">Dépenses</div>
+  <div class="dash-card"><h4>Jour / Semaine / Mois</h4>
+    <div class="krow"><span>Dépenses du jour</span><b id="dd_j">—</b></div>
+    <div class="krow"><span>Dépenses de la semaine</span><b id="dd_s">—</b></div>
+    <div class="krow"><span>Dépenses du mois</span><b id="dd_m">—</b></div>
+  </div>
+  <div class="sub-ttl">Caisse</div>
+  <div class="dash-card"><h4>Départ &amp; fermeture du jour</h4>
+    <div class="krow"><span>Caisse départ (jour)</span><b id="dc_dep">—</b></div>
+    <div class="krow"><span>Fermeture caisse (jour)</span><b id="dc_fer">—</b></div>
+  </div>
+  <div class="sub-ttl">Commerce</div>
+  <div class="dash-card"><h4>Indicateurs du jour</h4>
+    <div class="krow"><span>Capital commercial</span><b id="dc_cap">—</b></div>
+    <div class="krow"><span>Fond commercial</span><b id="dc_fond">—</b></div>
+    <div id="dashFondAlert"></div>
+  </div>
+</div>
+
+<div id="view-params" class="hidden">
+  <div class="view-ttl"><button class="back-btn" onclick="go('menu')">←</button><h2>PARAMÈTRES</h2></div>
+  <div id="adminBarParams"></div>
+  <div class="card card-dark">
+    <div class="field"><label>Date de travail</label><input type="date" id="p_date" onchange="changeDate(this.value)"></div>
+    <div class="work-calendar">
+      <div class="cal-head"><button class="cal-nav" onclick="moveCalendar(-1)">‹</button><strong id="calMonth">Calendrier</strong><button class="cal-nav" onclick="moveCalendar(1)">›</button></div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-legend"><span><i style="background:#ef4444"></i>Fermée</span><span><i style="background:#22c55e"></i>Ouverte</span><span><i style="background:#38bdf8"></i>En-cours</span><span><i style="background:#9ca3af"></i>Non travaillé</span></div>
+    </div>
+    <div class="field"><label>Nom du commerce</label><input type="text" id="p_shop" placeholder="Ex : Boutique" onchange="saveShop(this.value)"></div>
+  </div>
+  <div class="card card-dark">
+    <h4 style="font-size:12px;letter-spacing:1px;color:var(--gold2);margin-bottom:10px">DONNÉES CLOUD</h4>
+    <p style="font-size:11.5px;color:var(--muted);line-height:1.5;margin-bottom:10px">Vos données sont sauvegardées dans Firebase. Chaque utilisateur a son espace privé.</p>
+    <button class="btn btn-outline" onclick="manualSync()">☁ FORCER LA SYNCHRONISATION</button>
+  </div>
+</div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAlJgRSibcm3F6AR4PT_fCgbCELh4xGWcM",
+  authDomain: "nolan-cash-point.firebaseapp.com",
+  projectId: "nolan-cash-point",
+  storageBucket: "nolan-cash-point.firebasestorage.app",
+  messagingSenderId: "270096700363",
+  appId: "1:270096700363:web:f12234348c30fe317c5c4e"
+};
+
+const USERS_MAP = {
+  "NNKOW88MxWaYIFWoBxZqmYhLILl1": { email: "rasalamaso@gmail.com", role: "admin", name: "Rasalamaso" },
+  "tzCGlhgFo4P1sgoGeurwhx2Htbh2": { email: "sitraka@gmail.com", role: "vendeur", name: "Sitraka" }
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+
+let CURRENT_USER = null;
+let CURRENT_PROFILE = null;
+let VIEWING_UID = null;
+let SESSIONS_CACHE = {};
+const LS_D = 'noiror_date';
+const LS_SHOP = 'noiror_shop';
+
+const todayStr = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
+const curDate = () => localStorage.getItem(LS_D) || todayStr();
+const num = v => { const n = parseFloat(v); return isNaN(n) ? 0 : n; };
+const fmt = n => new Intl.NumberFormat('fr-FR').format(Math.round(n)) + ' Ar';
+const esc = n => (n >= 0 ? '+' : '') + fmt(n).replace(' Ar', '') + ' Ar';
+const addDays = (ds, n) => { const d = new Date(ds + 'T00:00:00'); d.setDate(d.getDate() + n); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
+const fmtD = ds => { const d = new Date(ds + 'T00:00:00'); return d.toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }); };
+const weekKey = ds => { const d = new Date(ds + 'T00:00:00'); const off = (d.getDay() + 6) % 7; d.setDate(d.getDate() - off); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
+
+async function loadCloudSessions(uid) {
+  if (!uid) return;
+  const ref = collection(db, 'users', uid, 'caisses');
+  const snap = await getDocs(ref);
+  SESSIONS_CACHE = {};
+  snap.forEach(d => { SESSIONS_CACHE[d.id] = d.data(); });
+}
+async function saveSessionCloud(uid, sess) {
+  if (!uid) return;
+  await setDoc(doc(db, 'users', uid, 'caisses', sess.date), sess);
+  showCloudStatus('☁ Sauvegardé');
+}
+  
+function blankSession(date) {
+  return { date, ouvert:false, ferme:false, d_solde:0, d_especes:0, d_entree:0, d_sortie:0,
+    f_solde:0, f_especes:0, f_depenses:0, f_entree:0, f_sortie:0,
+    totalDepart:0, totalFermeture:0, benefice:0, capital:0, fond:0 };
+}
+function getSession(date) { if (!SESSIONS_CACHE[date]) SESSIONS_CACHE[date] = blankSession(date); return SESSIONS_CACHE[date]; }
+function saveSession(sess) { SESSIONS_CACHE[sess.date] = sess; saveSessionCloud(VIEWING_UID, sess); }
+function calcAll(sess) {
+  sess.totalDepart = (sess.d_solde + sess.d_especes + sess.d_sortie) - sess.d_entree;
+  sess.totalFermeture = (sess.f_solde + sess.f_especes + sess.f_depenses + sess.f_sortie) - sess.f_entree;
+  sess.benefice = sess.totalFermeture - sess.totalDepart - sess.f_depenses;
+  sess.capital = sess.totalFermeture + sess.f_entree - sess.f_depenses;
+  sess.fond = sess.totalFermeture - sess.benefice;
+  return sess;
+}
+function getSessions() { return SESSIONS_CACHE; }
+
+function showCloudStatus(msg) {
+  let el = document.getElementById('cloudStatus');
+  if (!el) { el = document.createElement('div'); el.id = 'cloudStatus'; el.className = 'cloud-pill'; document.body.appendChild(el); }
+  el.textContent = msg; el.classList.remove('hide');
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hide'), 2200);
+}
+
+window.doLogin = async function() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const msg = document.getElementById('loginMsg');
+  msg.innerHTML = '';
+  if (!email || !pass) { msg.innerHTML = '<div class="alert alert-red">Remplissez tous les champs.</div>'; return; }
+  const btn = document.getElementById('btnLogin');
+  btn.disabled = true; btn.textContent = 'CONNEXION...';
+  try { await signInWithEmailAndPassword(auth, email, pass); }
+  catch (e) {
+    const errs = { 'auth/wrong-password':'Mot de passe incorrect', 'auth/user-not-found':'Utilisateur inconnu', 'auth/invalid-email':'Email invalide', 'auth/too-many-requests':'Trop de tentatives.' };
+    msg.innerHTML = '<div class="alert alert-red">✗ ' + (errs[e.code] || e.message) + '</div>';
+    btn.disabled = false; btn.textContent = 'SE CONNECTER';
+  }
+};
+
+window.doLogout = async function() {
+  if (!confirm('Se déconnecter ?')) return;
+  await signOut(auth);
+  location.reload();
+};
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const prof = USERS_MAP[user.uid] || { email: user.email, role: 'vendeur', name: user.email.split('@')[0] };
+    CURRENT_USER = user; CURRENT_PROFILE = prof; VIEWING_UID = user.uid;
+    document.getElementById('view-login').classList.add('hidden');
+    document.getElementById('view-app').classList.remove('hidden');
+    document.getElementById('userEmail').textContent = prof.email;
+    const roleEl = document.getElementById('userRole');
+    roleEl.textContent = prof.role.toUpperCase();
+    roleEl.className = 'role ' + (prof.role === 'admin' ? 'role-admin' : 'role-vendeur');
+    await loadCloudSessions(VIEWING_UID);
+    renderAdminBars();
+    renderCaisse();
+  } else {
+    CURRENT_USER = null; CURRENT_PROFILE = null; VIEWING_UID = null; SESSIONS_CACHE = {};
+    document.getElementById('view-login').classList.remove('hidden');
+    document.getElementById('view-app').classList.add('hidden');
+  }
+});
+
+function renderAdminBars() {
+  if (!CURRENT_PROFILE || CURRENT_PROFILE.role !== 'admin') {
+    ['adminBarCaisse','adminBarHist','adminBarRap','adminBarDash','adminBarParams'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.innerHTML = '';
+    });
+    return;
+  }
+  const opts = Object.entries(USERS_MAP).map(([uid, p]) => `<option value="${uid}"${uid === VIEWING_UID ? ' selected' : ''}>${p.name} — ${p.role}</option>`).join('');
+  const html = `<div class="admin-bar">👑 <span>Voir :</span><select onchange="switchUser(this.value)">${opts}</select></div>`;
+  ['adminBarCaisse','adminBarHist','adminBarRap','adminBarDash','adminBarParams'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.innerHTML = html;
+  });
+}
+
+window.switchUser = async function(uid) {
+  VIEWING_UID = uid; SESSIONS_CACHE = {};
+  await loadCloudSessions(uid);
+  const active = document.querySelector('#view-caisse:not(.hidden),#view-historique:not(.hidden),#view-rapport:not(.hidden),#view-dash:not(.hidden),#view-params:not(.hidden)');
+  if (active) {
+    if (active.id === 'view-caisse') renderCaisse();
+    else if (active.id === 'view-historique') renderHist();
+    else if (active.id === 'view-rapport') renderRapport();
+    else if (active.id === 'view-dash') renderDash();
+    else if (active.id === 'view-params') renderParams();
+  }
+  showCloudStatus('👁 Vue ' + (USERS_MAP[uid]?.name || uid));
+};
+
+let charts = [];
+window.go = function(v) {
+  ['menu','caisse','historique','rapport','dash','params'].forEach(x => document.getElementById('view-' + x).classList.add('hidden'));
+  document.getElementById('view-' + v).classList.remove('hidden');
+  window.scrollTo(0, 0);
+  if (v === 'caisse') renderCaisse();
+  if (v === 'historique') renderHist();
+  if (v === 'rapport') renderRapport();
+  if (v === 'dash') renderDash();
+  if (v === 'params') renderParams();
+};
+
+const lockSVG = open => open
+  ? '<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="#22c55e" stroke-width="2"/><path d="M8 10V7a4 4 0 017.8-1.3" stroke="#22c55e" stroke-width="2"/><circle cx="12" cy="15" r="1.6" fill="#22c55e"/></svg>'
+  : '<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="#ef4444" stroke-width="2"/><path d="M8 10V7a4 4 0 018 0v3" stroke="#ef4444" stroke-width="2"/><circle cx="12" cy="15" r="1.6" fill="#ef4444"/></svg>';
+
+window.renderCaisse = function() {
+  const sess = calcAll(getSession(curDate()));
+  document.getElementById('caisseDate').textContent = fmtD(sess.date);
+  ['d_solde','d_especes','d_entree','d_sortie','f_solde','f_especes','f_depenses','f_entree','f_sortie'].forEach(k => document.getElementById(k).value = sess[k] || '');
+  document.getElementById('openLockIco').innerHTML = lockSVG(sess.ouvert);
+  document.getElementById('closeLockIco').innerHTML = lockSVG(sess.ferme);
+  document.getElementById('closeCard').classList.toggle('hidden', !sess.ouvert);
+  document.getElementById('reportCard').classList.toggle('hidden', !sess.ferme);
+  document.getElementById('btnOpen').disabled = sess.ouvert;
+  document.getElementById('btnOpen').textContent = sess.ouvert ? '✓ CAISSE OUVERTE' : 'OUVRIR LA CAISSE';
+  document.getElementById('btnClose').disabled = sess.ferme;
+  document.getElementById('btnClose').textContent = sess.ferme ? '✓ CAISSE FERMÉE' : 'FERMETURE DE CAISSE';
+  document.getElementById('totalDepart').textContent = fmt(sess.totalDepart);
+  document.getElementById('totalFermeture').textContent = fmt(sess.totalFermeture);
+  const b = document.getElementById('benefVal'), a = document.getElementById('benefAlert'), mini = document.getElementById('benefCloseMini');
+  b.textContent = esc(sess.benefice); b.className = 'bval ' + (sess.benefice >= 0 ? 'pos' : 'neg');
+  if (mini) { mini.textContent = esc(sess.benefice); mini.className = sess.benefice >= 0 ? 'pos' : 'neg'; }
+  if (sess.ouvert) { a.innerHTML = sess.benefice >= 0 ? '<div class="alert alert-green">↻ Bénéfice mis à jour.</div>' : '<div class="alert alert-red">⚠ Bénéfice négatif estimé.</div>'; }
+  else a.innerHTML = '';
+  const hl = document.getElementById('hdrLock');
+  document.getElementById('hdrDate').textContent = fmtD(sess.date);
+  if (sess.ferme) { hl.className = 'lock-pill lock-closed'; hl.textContent = '🔒 FERMÉE'; }
+  else if (sess.ouvert) { hl.className = 'lock-pill lock-open'; hl.textContent = '🔓 OUVERTE'; }
+  else { hl.className = 'lock-pill lock-wait'; hl.textContent = 'EN ATTENTE'; }
+  document.getElementById('reportDate').value = addDays(sess.date, 1);
+};
+
+document.querySelectorAll('.calc-dep,.calc-fer').forEach(el => el.addEventListener('input', () => {
+  const sess = getSession(curDate());
+  ['d_solde','d_especes','d_entree','d_sortie','f_solde','f_especes','f_depenses','f_entree','f_sortie'].forEach(k => sess[k] = num(document.getElementById(k).value));
+  saveSession(calcAll(sess));
+  renderCaisse();
+  renderWorkCalendar();
+}));
+
+window.ouvrirCaisse = function() { const s = getSession(curDate()); if (s.ouvert) return; s.ouvert = true; saveSession(calcAll(s)); renderCaisse(); renderWorkCalendar(); };
+window.fermerCaisse = async function() {
+  const s = getSession(curDate()); if (!s.ouvert || s.ferme) return;
+  s.ferme = true; saveSession(calcAll(s));
+  await saveSessionCloud(VIEWING_UID, s);
+  showCloudStatus('☁ Caisse sauvegardée');
+  renderCaisse(); renderWorkCalendar();
+};
+window.reporterCaisse = function() {
+  const s = getSession(curDate()); if (!s.ferme) return;
+  const nd = document.getElementById('reportDate').value; if (!nd) return;
+  if (!SESSIONS_CACHE[nd]) {
+    const n = blankSession(nd);
+    n.d_solde = s.f_solde; n.d_especes = s.f_especes; n.d_sortie = s.f_sortie; n.d_entree = s.f_entree;
+    calcAll(n); SESSIONS_CACHE[nd] = n; saveSessionCloud(VIEWING_UID, n);
+  }
+  localStorage.setItem(LS_D, nd);
+  renderCaisse();
+  showCloudStatus('→ Reporté au ' + fmtD(nd));
+};
+  
+window.renderHist = function() {
+  const all = getSessions(); const dates = Object.keys(all).sort();
+  const list = document.getElementById('histList'); let html = '';
+  if (!dates.length) { list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:30px">Aucune caisse enregistrée.</p>'; return; }
+  if (histP === 'jour') {
+    dates.reverse().forEach(dt => { html += histItem(all[dt]); });
+  } else {
+    const groups = {};
+    dates.forEach(dt => {
+      const key = histP === 'semaine' ? weekKey(dt) : dt.slice(0,7);
+      if (!groups[key]) groups[key] = { key, depart:0, fermeture:0, benef:0, dep:0, n:0 };
+      const g = groups[key], s = calcAll(all[dt]);
+      g.depart += s.totalDepart; g.fermeture += s.totalFermeture;
+      g.benef += s.benefice; g.dep += s.f_depenses; g.n++;
+    });
+    Object.keys(groups).sort().reverse().forEach(k => {
+      const g = groups[k];
+      const lbl = histP === 'semaine' ? ('Semaine du ' + fmtD(k)) : new Date(k + '-01T00:00:00').toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+      html += '<div class="hist-item"><div class="hist-top"><b>' + lbl + '</b><span class="tag tag-ok">' + g.n + ' jour(s)</span></div>'
+        + '<div class="hist-grid">'
+        + '<span>Départ <b>' + fmt(g.depart) + '</b></span><span>Fermeture <b>' + fmt(g.fermeture) + '</b></span>'
+        + '<span>Bénéf <b class="' + (g.benef >= 0 ? 'pos' : 'neg') + '">' + esc(g.benef) + '</b></span><span>Dépenses <b class="neg">' + fmt(g.dep) + '</b></span>'
+        + '</div></div>';
+    });
+  }
+  list.innerHTML = html;
+};
+
+function histItem(s) {
+  const st = s.ferme ? '<span class="tag tag-closed">FERMÉE</span>' : (s.ouvert ? '<span class="tag tag-ok">OUVERTE</span>' : '<span class="tag tag-no">EN COURS</span>');
+  return '<div class="hist-item"><div class="hist-top"><b>' + fmtD(s.date) + '</b>' + st + '</div>'
+    + '<div class="hist-grid">'
+    + '<span>Départ <b>' + fmt(s.totalDepart) + '</b></span><span>Fermeture <b>' + fmt(s.totalFermeture) + '</b></span>'
+    + '<span>Bénéfice <b class="' + (s.benefice >= 0 ? 'pos' : 'neg') + '">' + esc(s.benefice) + '</b></span><span>Dépenses <b class="neg">' + fmt(s.f_depenses) + '</b></span>'
+    + '</div></div>';
+}
+
+let histP = 'jour';
+window.histPeriod = function(p) {
+  histP = p;
+  document.querySelectorAll('#histChips .chip').forEach(c => c.classList.toggle('active', c.dataset.p === p));
+  renderHist();
+};
+
+window.renderRapport = function() {
+  charts.forEach(c => c.destroy()); charts = [];
+  const all = getSessions(); const dates = Object.keys(all).sort();
+  if (!dates.length) return;
+  const lab = dates.map(fmtD);
+  const benef = dates.map(d => calcAll(all[d]).benefice);
+  const dep = dates.map(d => all[d].f_depenses);
+  const fond = dates.map(d => all[d].fond);
+  const cap = dates.map(d => all[d].capital);
+  const tb = benef.reduce((a,b) => a + b, 0), td = dep.reduce((a,b) => a + b, 0);
+  Chart.defaults.color = '#9c9484'; Chart.defaults.font.size = 10;
+  const grid = { color:'rgba(255,255,255,.06)' };
+  charts.push(new Chart(document.getElementById('chBenef'), { type:'line', data:{ labels:lab, datasets:[{ label:'Bénéfices', data:benef, borderColor:'#22c55e', backgroundColor:'rgba(34,197,94,.12)', fill:true, tension:.4 }] }, options:{ plugins:{legend:{display:false}}, scales:{ y:{grid}, x:{grid:{display:false}} } } }));
+  charts.push(new Chart(document.getElementById('chDep'), { type:'line', data:{ labels:lab, datasets:[{ label:'Dépenses', data:dep, borderColor:'#ef4444', backgroundColor:'rgba(239,68,68,.25)', fill:true, tension:.4 }] }, options:{ plugins:{legend:{display:false}}, scales:{ y:{grid}, x:{grid:{display:false}} } } }));
+  charts.push(new Chart(document.getElementById('chFond'), { type:'line', data:{ labels:lab, datasets:[
+    { label:'Fond', data:fond, borderColor:'#d4af37', backgroundColor:'rgba(212,175,55,.18)', fill:true, tension:.4 },
+    { label:'Capital', data:cap, borderColor:'#38bdf8', backgroundColor:'rgba(56,189,248,.12)', fill:true, tension:.4 }
+  ]}, options:{ scales:{ y:{grid}, x:{grid:{display:false}} } } }));
+  charts.push(new Chart(document.getElementById('chPie'), { type:'doughnut', data:{ labels:['Dépenses','Bénéfices'], datasets:[{ data:[td, Math.max(tb,0)], backgroundColor:['#ef4444','#22c55e'], borderColor:'#0a0a0a', borderWidth:3 }] }, options:{ plugins:{ legend:{ position:'bottom', labels:{ padding:15, usePointStyle:true } } }, cutout:'62%' } }));
+};
+
+function setK(id, val) { const e = document.getElementById(id); if (!e) return; e.textContent = fmt(val); e.className = val >= 0 ? 'pos' : 'neg'; }
+window.renderDash = function() {
+  const all = getSessions(); const cd = curDate();
+  document.getElementById('dashDate').textContent = fmtD(cd);
+  const wk = weekKey(cd), mo = cd.slice(0,7);
+  let agg = { j:{b:0,d:0,dep:0,fer:0}, s:{b:0,d:0}, m:{b:0,d:0} };
+  Object.keys(all).forEach(d => {
+    const s = calcAll(all[d]);
+    if (d === cd) { agg.j.b = s.benefice; agg.j.d = s.f_depenses; agg.j.dep = s.totalDepart; agg.j.fer = s.totalFermeture; }
+    if (weekKey(d) === wk) { agg.s.b += s.benefice; agg.s.d += s.f_depenses; }
+    if (d.slice(0,7) === mo) { agg.m.b += s.benefice; agg.m.d += s.f_depenses; }
+  });
+  setK('db_j', agg.j.b); setK('db_s', agg.s.b); setK('db_m', agg.m.b);
+  ['dd_j','dd_s','dd_m'].forEach((id,i) => { const v = [agg.j.d, agg.s.d, agg.m.d][i]; const e = document.getElementById(id); e.textContent = fmt(v); e.className = 'neg'; });
+  document.getElementById('dc_dep').textContent = fmt(agg.j.dep);
+  document.getElementById('dc_fer').textContent = fmt(agg.j.fer);
+  const sToday = all[cd] ? calcAll(all[cd]) : null;
+  if (sToday) {
+    setK('dc_cap', sToday.capital); setK('dc_fond', sToday.fond);
+    document.getElementById('dashAlert').innerHTML = sToday.benefice < 0 ? '<div class="alert alert-red">⚠ Bénéfice négatif ce jour.</div>' : '';
+    document.getElementById('dashFondAlert').innerHTML = sToday.benefice < 0 ? '<div class="alert alert-red">⚠ Fond commercial en baisse.</div>' : '';
+  }
+};
+
+let calYearMonth = curDate().slice(0,7);
+function sessionStatus(s) {
+  if (s.ferme) return 'closed';
+  if (s.ouvert) return 'open';
+  const keys = ['d_solde','d_especes','d_entree','d_sortie','f_solde','f_especes','f_depenses','f_entree','f_sortie'];
+  return keys.some(k => num(s[k]) !== 0) ? 'progress' : 'off';
+}
+window.renderWorkCalendar = function() {
+  const first = new Date(calYearMonth + '-01T00:00:00');
+  const year = first.getFullYear(), month = first.getMonth();
+  const el = document.getElementById('calMonth'); if (!el) return;
+  el.textContent = first.toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+  const grid = document.getElementById('calGrid'), names = ['Lu','Ma','Me','Je','Ve','Sa','Di'];
+  let html = names.map(n => '<div class="cal-weekday">' + n + '</div>').join('');
+  for (let i = 0; i < (first.getDay() + 6) % 7; i++) html += '<div></div>';
+  const days = new Date(year, month+1, 0).getDate(), selected = curDate(), all = getSessions();
+  for (let day = 1; day <= days; day++) {
+    const dt = year + '-' + String(month+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+    const sess = all[dt], status = sess ? sessionStatus(sess) : 'off';
+    const cls = { closed:'st-closed', open:'st-open', progress:'st-progress', off:'st-off' }[status];
+    html += '<button class="cal-day ' + cls + (dt === selected ? ' selected' : '') + '" onclick="selectCalendarDate(\'' + dt + '\')">' + day + '<i class="dot"></i></button>';
+  }
+  grid.innerHTML = html;
+};
+window.moveCalendar = function(delta) {
+  const d = new Date(calYearMonth + '-01T00:00:00'); d.setMonth(d.getMonth() + delta);
+  calYearMonth = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+  renderWorkCalendar();
+};
+window.selectCalendarDate = function(dt) {
+  localStorage.setItem(LS_D, dt); getSession(dt);
+  calYearMonth = dt.slice(0,7);
+  renderCaisse(); renderWorkCalendar();
+};
+window.changeDate = function(v) {
+  if (!v) return;
+  localStorage.setItem(LS_D, v); getSession(v);
+  calYearMonth = v.slice(0,7);
+  renderParams(); renderCaisse();
+};
+window.saveShop = function(v) { localStorage.setItem(LS_SHOP, v); };
+window.manualSync = async function() {
+  showCloudStatus('☁ Synchronisation...');
+  await loadCloudSessions(VIEWING_UID);
+  renderCaisse(); renderWorkCalendar();
+  showCloudStatus('✓ Synchronisé');
+};
+window.renderParams = function() {
+  document.getElementById('p_date').value = curDate();
+  document.getElementById('p_shop').value = localStorage.getItem(LS_SHOP) || '';
+  calYearMonth = curDate().slice(0,7);
+  renderWorkCalendar();
+};
+
+// Service Worker pour PWA
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
